@@ -13,17 +13,40 @@ running = True
 startpos = (400, 400)
 
 circle_list = []
-for i in range(10):
+for i in range(5):
     circle_list.append(((random.randint(0, 800), random.randint(0, 800)), random.randint(10, 40)))
+
+rect_list = []
+for i in range(5):
+    rect_list.append(
+        ((random.randint(0, 800), random.randint(0, 800)), (random.randint(10, 40), random.randint(10, 40))))
+
+
+def sdf_circle(start, pos, r):
+    delta_x = start[0] - pos[0]
+    delta_y = start[1] - pos[1]
+    distance = math.sqrt(delta_x ** 2 + delta_y ** 2) - r
+    return distance
+
+
+def sdf_rect(start, pos, size):
+    delta_x = abs(start[0] - pos[0])
+    delta_y = abs(start[1] - pos[1])
+    x_distance = max(delta_x - size[0], 0)
+    y_distance = max(delta_y - size[1], 0)
+    distance = math.sqrt(x_distance ** 2 + y_distance ** 2)
+    return distance
 
 
 def return_max_distance(start):
     distances = []
     for circle in circle_list:
         pos, r = circle
-        delta_x = start[0] - pos[0]
-        delta_y = start[1] - pos[1]
-        distance = math.sqrt(delta_x ** 2 + delta_y ** 2) - r
+        distance = sdf_circle(start, pos, r)
+        distances.append(distance)
+    for rect in rect_list:
+        pos, size = rect
+        distance = sdf_rect(start, pos, size)
         distances.append(distance)
     return min(distances)
 
@@ -39,6 +62,12 @@ def render_obstacles():
     for circle in circle_list:
         pos, r = circle
         pygame.draw.circle(screen, (50, 125, 100), pos, r)
+
+    for rect in rect_list:
+        pos, size = rect
+        rect = pygame.Rect(0, 0, size[0] * 2, size[1] * 2)
+        rect.center = pos
+        pygame.draw.rect(screen, (75, 100, 150), rect)
 
 
 def ray_march(direction):
