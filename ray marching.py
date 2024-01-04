@@ -6,6 +6,7 @@ import random
 pygame.init()
 screen = pygame.display.set_mode((800, 800))
 clock = pygame.time.Clock()
+font = pygame.font.Font(None, 32)
 fps = 120
 running = True
 
@@ -60,6 +61,11 @@ def ray_march(direction):
     for circle in ray_march_circles:
         pos, r = circle
         pygame.draw.circle(screen, (225, 208, 50), pos, r, 1)
+
+    distance_text = font.render(str(int(length)), True, (100, 100, 100))
+    distance_rect = distance_text.get_rect()
+    distance_rect.topright = (795, 5)
+    screen.blit(distance_text, distance_rect)
 
 
 def get_mouse_angle(pos):
