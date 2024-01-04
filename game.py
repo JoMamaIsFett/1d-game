@@ -34,8 +34,13 @@ center_x, center_y = screen_width // 2, screen_height // 2
 pyautogui.moveTo(center_x, center_y)
 
 circle_list = []
+rect_list = []
 for i in range(obstacle_number):
-    circle_list.append(((random.randint(0, 800), random.randint(0, 800)), random.randint(10, 40)))
+    ran = random.randint(1, 2)
+    if ran == 1:
+        circle_list.append(((random.randint(0, 800), random.randint(0, 800)), random.randint(10, 40)))
+    elif ran == 2:
+        rect_list.append(((random.randint(0, 800), random.randint(0, 800)), (random.randint(10, 40), random.randint(10, 40))))
 
 pixel_distance = []
 pixels = []
@@ -47,13 +52,31 @@ for pixel in range(screen.get_width() // width):
     pixels.append(rect)
 
 
+def sdf_circle(start, pos, r):
+    delta_x = start[0] - pos[0]
+    delta_y = start[1] - pos[1]
+    distance = math.sqrt(delta_x ** 2 + delta_y ** 2) - r
+    return distance
+
+
+def sdf_rect(start, pos, size):
+    delta_x = abs(start[0] - pos[0])
+    delta_y = abs(start[1] - pos[1])
+    x_distance = max(delta_x - size[0], 0)
+    y_distance = max(delta_y - size[1], 0)
+    distance = math.sqrt(x_distance ** 2 + y_distance ** 2)
+    return distance
+
+
 def return_max_distance(start):
     distances = []
     for circle in circle_list:
         pos, r = circle
-        delta_x = start[0] - pos[0]
-        delta_y = start[1] - pos[1]
-        distance = math.sqrt(delta_x ** 2 + delta_y ** 2) - r
+        distance = sdf_circle(start, pos, r)
+        distances.append(distance)
+    for rect in rect_list:
+        pos, size = rect
+        distance = sdf_rect(start, pos, size)
         distances.append(distance)
     return min(distances)
 
@@ -88,6 +111,11 @@ def render_obstacles():
     for circle in circle_list:
         pos, r = circle
         pygame.draw.circle(screen, (50, 125, 100), pos, r)
+    for rect in rect_list:
+        pos, size = rect
+        rect = pygame.Rect(0, 0, size[0] * 2, size[1] * 2)
+        rect.center = pos
+        pygame.draw.rect(screen, (75, 100, 150), rect)
 
 
 def ray_march(direction):
