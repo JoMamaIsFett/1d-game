@@ -119,9 +119,7 @@ if __name__ == "__main__":
     allow_hacks = server_data["hacks"]
 
     clients = []
-    player_data = {1: [[50, 50], 0, False, False, "BananaMan", 8],
-                   2: [[501, 541], 0, False, False, "Profigamer", 6],
-                   3: [[870, 605], 0, False, False, "JoMama", 0]}
+    player_data = {}
 
     circle_list = []
     rect_list = [((width // 2, -5), (width // 2, 5)), ((-5, height // 2), (5, height // 2)),
