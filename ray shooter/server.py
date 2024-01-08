@@ -124,7 +124,7 @@ if __name__ == "__main__":
     circle_list = []
     rect_list = [((width // 2, -5), (width // 2, 5)), ((-5, height // 2), (5, height // 2)),
                  ((width + 5, height // 2), (5, height // 2)), ((width // 2, height + 5), (width // 2, 5))]
-    current_id = 5
+    current_id = 1
 
     generate_map(objects)
     start_server()
